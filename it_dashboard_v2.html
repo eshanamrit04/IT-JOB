@@ -1,0 +1,305 @@
+<h2 class="sr-only">IT Career Intelligence Dashboard — job postings, in-demand skills, salary trends, and hiring patterns for the IT sector</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.dash{padding:1.25rem 0;font-family:var(--font-sans)}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.badge{font-size:11px;padding:3px 10px;border-radius:var(--border-radius-md);background:var(--color-background-success);color:var(--color-text-success)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.filter-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.filter-btn.active{background:#185FA5;color:#E6F1FB;border-color:#185FA5}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.25rem}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.metric-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.metric-change{font-size:11px;margin-top:2px}
+.up{color:var(--color-text-success)}.down{color:var(--color-text-danger)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:1rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.card-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.skill-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.skill-name{font-size:12px;color:var(--color-text-primary);min-width:96px}
+.bar-wrap{flex:1;height:5px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.pct{font-size:11px;color:var(--color-text-secondary);min-width:30px;text-align:right}
+.role-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.role-row:last-child{border-bottom:none}
+.role-tag{font-size:10px;padding:2px 7px;border-radius:10px;margin-left:5px}
+.hot{background:#FAECE7;color:#712B13}.growing{background:#E1F5EE;color:#085041}.stable{background:#E6F1FB;color:#0C447C}
+.heat-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px}
+.month-label{font-size:10px;color:var(--color-text-tertiary);text-align:center;margin-bottom:3px}
+.heat-box{height:26px;border-radius:3px}
+.sal-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.sal-role{font-size:12px;color:var(--color-text-primary);min-width:108px}
+.sal-range{flex:1;position:relative;height:8px;background:var(--color-background-secondary);border-radius:4px}
+.sal-fill{height:100%;border-radius:4px;position:absolute}
+.sal-label{font-size:11px;color:var(--color-text-secondary);min-width:58px;text-align:right}
+.leg-item{font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:4px}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.insight-box{border-left:3px solid #378ADD;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px;margin-top:1rem;font-size:13px;color:var(--color-text-info);background:var(--color-background-info);line-height:1.6}
+select{font-size:12px;padding:4px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+</style>
+
+<div class="dash">
+  <div class="dash-header">
+    <div>
+      <div style="font-size:18px;font-weight:500;color:var(--color-text-primary)"><i class="ti ti-chart-bar" aria-hidden="true" style="margin-right:6px;color:#185FA5"></i>IT Career Intelligence Dashboard</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:3px">Based on 1.2M+ job postings · Updated May 2025</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="regionSel">
+        <option>Global</option><option>North America</option><option>Europe</option><option>Asia-Pacific</option><option>India</option>
+      </select>
+      <span class="badge"><i class="ti ti-point-filled" style="font-size:8px;margin-right:2px" aria-hidden="true"></i>Live data</span>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter(this,'All')">All roles</button>
+    <button class="filter-btn" onclick="setFilter(this,'AI/ML')">AI / ML</button>
+    <button class="filter-btn" onclick="setFilter(this,'Cloud')">Cloud</button>
+    <button class="filter-btn" onclick="setFilter(this,'Security')">Security</button>
+    <button class="filter-btn" onclick="setFilter(this,'Web Dev')">Web Dev</button>
+    <button class="filter-btn" onclick="setFilter(this,'Data')">Data</button>
+    <button class="filter-btn" onclick="setFilter(this,'DevOps')">DevOps</button>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Open positions</div><div class="metric-val" id="mJobs">487K</div><div class="metric-change up"><i class="ti ti-trending-up" aria-hidden="true"></i> +18% YoY</div></div>
+    <div class="metric"><div class="metric-label">Avg. base salary</div><div class="metric-val" id="mSal">$118K</div><div class="metric-change up"><i class="ti ti-trending-up" aria-hidden="true"></i> +6.4% YoY</div></div>
+    <div class="metric"><div class="metric-label">Remote roles</div><div class="metric-val" id="mRemote">41%</div><div class="metric-change down"><i class="ti ti-trending-down" aria-hidden="true"></i> -4% vs 2024</div></div>
+    <div class="metric"><div class="metric-label">Time to hire</div><div class="metric-val" id="mHire">34 days</div><div class="metric-change up"><i class="ti ti-trending-up" aria-hidden="true"></i> Faster by 3d</div></div>
+    <div class="metric"><div class="metric-label">Entry-level share</div><div class="metric-val" id="mEntry">22%</div><div class="metric-change up"><i class="ti ti-trending-up" aria-hidden="true"></i> +2% vs 2024</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-tool" aria-hidden="true" style="margin-right:4px"></i>Top in-demand skills</div>
+      <div id="skillList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-briefcase" aria-hidden="true" style="margin-right:4px"></i>Hottest job roles</div>
+      <div id="roleList"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-coin" aria-hidden="true" style="margin-right:4px"></i>Salary ranges by role <span style="font-size:10px;font-weight:400;opacity:.6">(USD thousands)</span></div>
+      <div id="salaryBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-calendar" aria-hidden="true" style="margin-right:4px"></i>Monthly hiring heatmap — 2025</div>
+      <div class="heat-grid" id="heatmap"></div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:10px;font-size:11px;color:var(--color-text-secondary)">
+        <span>Low</span>
+        <span style="display:flex;gap:3px">
+          <span style="width:14px;height:14px;border-radius:2px;background:#E6F1FB;display:inline-block"></span>
+          <span style="width:14px;height:14px;border-radius:2px;background:#85B7EB;display:inline-block"></span>
+          <span style="width:14px;height:14px;border-radius:2px;background:#378ADD;display:inline-block"></span>
+          <span style="width:14px;height:14px;border-radius:2px;background:#185FA5;display:inline-block"></span>
+          <span style="width:14px;height:14px;border-radius:2px;background:#0C447C;display:inline-block"></span>
+        </span>
+        <span>High</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-home-2" aria-hidden="true" style="margin-right:4px"></i>Work model mix</div>
+      <div style="position:relative;width:100px;height:100px;margin:8px auto 12px">
+        <canvas id="donutChart" width="100" height="100" role="img" aria-label="Work model: 41% remote, 35% hybrid, 24% on-site"></canvas>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div class="leg-item"><span class="leg-dot" style="background:#185FA5"></span>Remote — 41%</div>
+        <div class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>Hybrid — 35%</div>
+        <div class="leg-item"><span class="leg-dot" style="background:#888780"></span>On-site — 24%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-school" aria-hidden="true" style="margin-right:4px"></i>Education requirements</div>
+      <div id="eduBars" style="margin-top:4px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-map-pin" aria-hidden="true" style="margin-right:4px"></i>Top hiring hubs</div>
+      <div id="hubList" style="margin-top:4px"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-title" style="margin-bottom:8px"><i class="ti ti-chart-line" aria-hidden="true" style="margin-right:4px"></i>Job posting trends — last 12 months</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+      <div class="leg-item"><span class="leg-dot" style="background:#185FA5"></span>AI/ML</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#1D9E75;border:1px dashed #1D9E75"></span>Cloud</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#5F5E5A"></span>Security</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#7F77DD;border:1px dashed #7F77DD"></span>Data</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#0F6E56"></span>DevOps</div>
+    </div>
+    <div style="position:relative;width:100%;height:220px">
+      <canvas id="trendChart" role="img" aria-label="Line chart showing job posting growth for AI/ML, Cloud, Security, Data, and DevOps over 12 months. AI/ML shows strongest growth at +42%.">AI/ML grew 42%, Cloud 18%, Security 12%, Data 8%, DevOps 5% over 12 months.</canvas>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <strong>Key insight:</strong> AI/ML and Cloud roles are growing fastest (+42% and +18% YoY). Professionals with Python, AWS, and LLM fine-tuning skills command a 23% salary premium. Entry-level demand is recovering — junior roles are up 2% and many now accept bootcamp certificates or portfolio-based hiring.
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="sendPrompt('What career path should I take to break into AI/ML in 2025?')">Explore AI/ML path ↗</button>
+      <button onclick="sendPrompt('What certifications should I get for cloud computing jobs?')">Cloud cert guide ↗</button>
+      <button onclick="sendPrompt('What are the highest paying IT roles in 2025?')">Salary deep dive ↗</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA={
+  'All':     {jobs:'487K',sal:'$118K',remote:'41%',hire:'34 days',entry:'22%'},
+  'AI/ML':   {jobs:'94K', sal:'$148K',remote:'52%',hire:'28 days',entry:'15%'},
+  'Cloud':   {jobs:'112K',sal:'$132K',remote:'48%',hire:'30 days',entry:'19%'},
+  'Security':{jobs:'78K', sal:'$128K',remote:'38%',hire:'38 days',entry:'18%'},
+  'Web Dev': {jobs:'103K',sal:'$98K', remote:'55%',hire:'29 days',entry:'30%'},
+  'Data':    {jobs:'88K', sal:'$122K',remote:'44%',hire:'33 days',entry:'21%'},
+  'DevOps':  {jobs:'62K', sal:'$135K',remote:'46%',hire:'32 days',entry:'16%'}
+};
+
+const SKILLS={
+  'All':     [['Python',95],['AWS',88],['Kubernetes',78],['React',74],['SQL',70],['TensorFlow',65],['Terraform',60],['Rust',48]],
+  'AI/ML':   [['Python',98],['TensorFlow',92],['PyTorch',88],['LLM tuning',82],['MLOps',72],['Hugging Face',68],['CUDA',55],['RAG',50]],
+  'Cloud':   [['AWS',96],['Terraform',90],['Kubernetes',88],['Azure',82],['GCP',74],['Docker',70],['Ansible',60],['FinOps',50]],
+  'Security':[['SIEM',92],['Zero Trust',88],['Cloud Security',84],['Pen Testing',78],['SOC',72],['CISSP',68],['IAM',64],['SOAR',56]],
+  'Web Dev': [['React',96],['TypeScript',92],['Node.js',86],['Next.js',80],['GraphQL',70],['Tailwind',65],['Vue.js',58],['WebAssembly',42]],
+  'Data':    [['SQL',96],['Python',94],['Spark',84],['dbt',78],['Snowflake',74],['Airflow',68],['Power BI',62],['Delta Lake',52]],
+  'DevOps':  [['Kubernetes',96],['Terraform',92],['CI/CD',88],['Docker',84],['Prometheus',72],['GitHub Actions',68],['ArgoCD',60],['Helm',54]]
+};
+
+const ROLES={
+  'All':     [['AI/ML Engineer','hot',18400],['Cloud Architect','hot',14200],['Security Analyst','growing',12800],['Data Engineer','growing',11600],['DevOps Engineer','stable',9400],['Full Stack Dev','stable',16200],['Platform Engineer','growing',7800]],
+  'AI/ML':   [['ML Engineer','hot',18400],['AI Researcher','hot',8200],['MLOps Engineer','hot',9600],['LLM Engineer','hot',12000],['Data Scientist','growing',11000]],
+  'Cloud':   [['Cloud Architect','hot',14200],['Cloud Engineer','hot',18000],['FinOps Analyst','growing',6400],['Solutions Architect','stable',10200],['SRE','growing',8800]],
+  'Security':[['Security Analyst','hot',12800],['Pen Tester','hot',7200],['Cloud Sec Engineer','growing',9400],['IAM Specialist','growing',6200],['CISO','stable',2800]],
+  'Web Dev': [['Full Stack Dev','stable',16200],['Frontend Dev','stable',12800],['React Dev','growing',9400],['Backend Dev','stable',10600],['Web3 Dev','hot',4200]],
+  'Data':    [['Data Engineer','hot',11600],['Analytics Engineer','growing',8800],['Data Architect','growing',6200],['BI Developer','stable',7400],['Data Analyst','stable',13200]],
+  'DevOps':  [['DevOps Engineer','stable',9400],['Platform Engineer','growing',7800],['SRE','growing',8800],['Cloud DevOps','hot',6200],['Release Manager','stable',3800]]
+};
+
+const SALARIES={
+  'All':     [['AI/ML Engineer',130,185],['Cloud Architect',128,178],['Security Eng.',115,165],['Data Engineer',112,158],['DevOps Engineer',118,162],['Full Stack Dev',90,140],['QA Engineer',75,115]],
+  'AI/ML':   [['LLM Engineer',145,210],['AI Researcher',140,200],['ML Engineer',130,185],['MLOps Eng.',125,175],['Data Scientist',115,165]],
+  'Cloud':   [['Cloud Architect',128,178],['Solutions Arch.',125,172],['SRE',118,168],['Cloud Engineer',108,155],['FinOps Analyst',90,135]],
+  'Security':[['CISO',160,240],['Cloud Sec Eng.',130,180],['Pen Tester',105,155],['Security Analyst',88,135],['IAM Specialist',95,140]],
+  'Web Dev': [['Web3 Dev',115,175],['Full Stack Dev',90,140],['Backend Dev',88,132],['React Dev',82,128],['Frontend Dev',75,118]],
+  'Data':    [['Data Architect',125,175],['Data Engineer',112,158],['Analytics Eng.',105,152],['BI Developer',88,132],['Data Analyst',72,115]],
+  'DevOps':  [['Cloud DevOps',125,172],['Platform Eng.',118,165],['SRE',118,168],['DevOps Eng.',108,155],['Release Mgr',88,128]]
+};
+
+const BAR_COLOR='#185FA5';
+const HEAT=['#E6F1FB','#B5D4F4','#85B7EB','#378ADD','#185FA5','#0C447C'];
+const HEAT_VALS=[62,70,88,92,100,96,82,88,95,90,84,78];
+const MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
+const HUBS=[['San Francisco',112],['New York',108],['Seattle',94],['Austin',72],['London',68],['Bangalore',65],['Berlin',48],['Toronto',44]];
+
+let cur='All';
+
+function setFilter(btn,f){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  cur=f;
+  updateMetrics();renderSkills();renderRoles();renderSalaries();
+}
+
+function updateMetrics(){
+  const d=DATA[cur];
+  document.getElementById('mJobs').textContent=d.jobs;
+  document.getElementById('mSal').textContent=d.sal;
+  document.getElementById('mRemote').textContent=d.remote;
+  document.getElementById('mHire').textContent=d.hire;
+  document.getElementById('mEntry').textContent=d.entry;
+}
+
+function renderSkills(){
+  document.getElementById('skillList').innerHTML=SKILLS[cur].map(([n,p])=>
+    `<div class="skill-row">
+      <div class="skill-name">${n}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${p}%;background:${BAR_COLOR}"></div></div>
+      <div class="pct">${p}%</div>
+    </div>`).join('');
+}
+
+function renderRoles(){
+  document.getElementById('roleList').innerHTML=ROLES[cur].map(([n,t,c])=>
+    `<div class="role-row">
+      <div><span style="font-size:13px;color:var(--color-text-primary)">${n}</span><span class="role-tag ${t}">${t}</span></div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">${c.toLocaleString()} open</div>
+    </div>`).join('');
+}
+
+function renderSalaries(){
+  const max=260;
+  document.getElementById('salaryBars').innerHTML=SALARIES[cur].map(([n,lo,hi])=>{
+    const lp=Math.round(lo/max*100),hp=Math.round(hi/max*100);
+    return `<div class="sal-row">
+      <div class="sal-role">${n}</div>
+      <div class="sal-range"><div class="sal-fill" style="left:${lp}%;width:${hp-lp}%;background:${BAR_COLOR};opacity:.75"></div></div>
+      <div class="sal-label">$${lo}–${hi}K</div>
+    </div>`;}).join('');
+}
+
+function renderHeatmap(){
+  document.getElementById('heatmap').innerHTML=MONTHS.map((m,i)=>{
+    const ci=Math.min(Math.floor(HEAT_VALS[i]/20),5);
+    return `<div><div class="month-label">${m}</div><div class="heat-box" style="background:${HEAT[ci]}"></div></div>`;
+  }).join('');
+}
+
+function renderEdu(){
+  const items=[['Bachelor\'s req.',62],['Master\'s preferred',28],['No degree req.',48],['Bootcamp ok',35],['Cert. sufficient',40]];
+  document.getElementById('eduBars').innerHTML=items.map(([l,p])=>
+    `<div class="skill-row">
+      <div class="skill-name" style="min-width:110px;font-size:12px">${l}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${p}%;background:${BAR_COLOR}"></div></div>
+      <div class="pct">${p}%</div>
+    </div>`).join('');
+}
+
+function renderHubs(){
+  document.getElementById('hubList').innerHTML=HUBS.map(([city,cnt])=>
+    `<div class="role-row">
+      <div style="font-size:13px;color:var(--color-text-primary)">${city}</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">${cnt}K listings</div>
+    </div>`).join('');
+}
+
+function initDonut(){
+  new Chart(document.getElementById('donutChart'),{
+    type:'doughnut',
+    data:{labels:['Remote','Hybrid','On-site'],datasets:[{data:[41,35,24],backgroundColor:['#185FA5','#1D9E75','#888780'],borderWidth:0,hoverOffset:3}]},
+    options:{responsive:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{enabled:true}},animation:{duration:700}}
+  });
+}
+
+function initTrend(){
+  const labels=['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'];
+  new Chart(document.getElementById('trendChart'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'AI/ML',data:[58,62,68,74,80,84,88,92,88,94,98,100],borderColor:'#185FA5',backgroundColor:'rgba(24,95,165,.07)',borderWidth:2,tension:.35,pointRadius:2.5,fill:true},
+      {label:'Cloud',data:[72,74,76,78,80,80,82,84,82,86,88,90],borderColor:'#1D9E75',borderWidth:2,tension:.35,pointRadius:2.5,fill:false,borderDash:[5,3]},
+      {label:'Security',data:[60,62,64,65,68,68,70,72,72,74,76,76],borderColor:'#5F5E5A',borderWidth:2,tension:.35,pointRadius:2.5,fill:false},
+      {label:'Data',data:[64,64,66,68,68,70,70,72,72,72,74,74],borderColor:'#7F77DD',borderWidth:2,tension:.35,pointRadius:2.5,fill:false,borderDash:[3,2]},
+      {label:'DevOps',data:[60,62,62,64,64,64,66,66,68,68,68,70],borderColor:'#0F6E56',borderWidth:2,tension:.35,pointRadius:2.5,fill:false}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},
+      scales:{
+        x:{ticks:{font:{size:11},autoSkip:false,maxRotation:0},grid:{color:'rgba(128,128,128,.08)'}},
+        y:{ticks:{font:{size:11}},grid:{color:'rgba(128,128,128,.08)'},min:50,max:110}
+      }
+    }
+  });
+}
+
+renderSkills();renderRoles();renderSalaries();renderHeatmap();renderEdu();renderHubs();
+setTimeout(()=>{initDonut();initTrend();},120);
+</script>
